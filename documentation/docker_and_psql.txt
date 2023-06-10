@@ -1,0 +1,13 @@
+Copy the .sql file to postgresql docker container
+-> docker cp expensetracker_db.sql my_postgresql(docker container name):/
+
+Execute Docker container
+-> docker exec -it my_postgresql bash
+
+Run the expensetracker_db.sql file to create DB and Tables and relations, sequences
+-> psql -U postgres --file expensetracker_db.sql
+
+Get access to postgresql by command line directly
+-> docker exec -it my_postgresql psql -U postgres
+-> \connect expensetrackerdb
+
