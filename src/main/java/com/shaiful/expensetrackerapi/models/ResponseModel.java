@@ -12,10 +12,6 @@ public class ResponseModel <T>{
 
     T data;
 
-    public ResponseModel(T data, int statusCode) {
-        this.data = data;
-    }
-
     public ResponseModel(T data, String message) {
         this.data = data;
         this.message = message;

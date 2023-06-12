@@ -24,14 +24,14 @@ public class AuthFilter extends GenericFilterBean {
         String authHeader = httpRequest.getHeader("Authorization");
 
         if(authHeader == null){
-            httpResponse.sendError(HttpStatus.FORBIDDEN.value(), "Authorization token not provided");
+            httpResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "Authorization token not provided");
             return;
         }
 
         String[] authHeadersArr = authHeader.split("Bearer ");
 
         if(authHeadersArr.length < 2 || authHeadersArr[1] == null){
-            httpResponse.sendError(HttpStatus.FORBIDDEN.value(), "Authorization token must be Bearer [token]");
+            httpResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "Authorization token must be Bearer [token]");
             return;
         }
 
@@ -40,7 +40,7 @@ public class AuthFilter extends GenericFilterBean {
             Claims claims = Jwts.parser().setSigningKey(Constants.API_SECRET_KEY).parseClaimsJws(token).getBody();
             httpRequest.setAttribute("user_id", claims.get("user_id"));
         } catch (Exception e) {
-            httpResponse.sendError(HttpStatus.FORBIDDEN.value(), "Invalid token or token has expired.");
+            httpResponse.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid token or token has expired.");
             return;
         }
 
