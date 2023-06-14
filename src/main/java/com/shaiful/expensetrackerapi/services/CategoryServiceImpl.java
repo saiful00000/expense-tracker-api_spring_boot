@@ -18,13 +18,13 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
 
     @Override
-    public List<Category> allCategories() {
-        return null;
+    public List<Category> allCategories(Integer userId) {
+        return categoryRepository.findAll(userId);
     }
 
     @Override
-    public Category getCategoryById() throws EtResourceNotFoundException {
-        return null;
+    public Category getCategoryById(Integer userId, Integer categoryId) throws EtResourceNotFoundException {
+        return categoryRepository.findById(userId, categoryId);
     }
 
     @Override
@@ -34,8 +34,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void updateCategory(Integer userId, Integer categoryId, Category category) throws EtBadRequestException {
-
+    public void updateCategory(Integer userId, Category category) throws EtBadRequestException {
+        categoryRepository.update(userId, category);
     }
 
     @Override

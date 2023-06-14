@@ -14,7 +14,7 @@ public interface CategoryRepository {
 
     Integer create(Integer userId, String title, String description) throws EtBadRequestException;
 
-    Integer update (Integer userId, Integer categoryId, String title, String description) throws EtBadRequestException;
+    void update (Integer userId, Category category) throws EtBadRequestException;
 
     void removeAll(Integer userId, Integer categoryId, Category category);
 

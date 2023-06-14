@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,9 +22,16 @@ public class CategoryController {
     CategoryService categoryService;
 
     @GetMapping("")
-    public String getAllCategories(HttpServletRequest request) {
+    public ResponseEntity<ResponseModel<List<Category>>> getAllCategories(HttpServletRequest request) {
+        List<Category> categoryList = categoryService.allCategories((Integer) request.getAttribute("user_id"));
+        return new ResponseEntity<>(new ResponseModel<List<Category>>(categoryList, "Success!"), HttpStatus.OK);
+    }
+
+    @GetMapping("/{category_id}")
+    public ResponseEntity<ResponseModel<Category>> getCategoryById(HttpServletRequest request, @PathVariable("category_id") Integer categoryId){
         Integer userId = (Integer) request.getAttribute("user_id");
-        return "User id = " + userId;
+        Category category = categoryService.getCategoryById(userId, categoryId);
+        return new ResponseEntity<>(new ResponseModel<>(category, "Success!"), HttpStatus.OK);
     }
 
     @PostMapping("")
@@ -35,8 +43,14 @@ public class CategoryController {
         );
 
         return new ResponseEntity<>(
-                new ResponseModel<Category>(category, "Category added successfully."),
+                new ResponseModel<>(category, "Category added successfully."),
                 HttpStatus.CREATED
         );
+    }
+
+    @PutMapping("")
+    public ResponseEntity<Map<String, Object>> updateCategory(HttpServletRequest request, @RequestBody Category category){
+        categoryService.updateCategory((Integer) request.getAttribute("user_id"), category);
+        return new ResponseEntity<>(Map.of("success", true, "message", "Category updated successfully."), HttpStatus.OK);
     }
 }
