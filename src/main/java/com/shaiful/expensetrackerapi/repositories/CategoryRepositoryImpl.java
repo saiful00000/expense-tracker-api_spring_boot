@@ -70,7 +70,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public void update(Integer userId, Category category) throws EtBadRequestException {
         try{
-            jdbcTemplate.update(SQL_UPDATE, new Object[]{category.getTitle(), category.getDescription()}, userId, category.getCategoryId());
+            jdbcTemplate.update(SQL_UPDATE, category.getTitle(), category.getDescription(), userId, category.getCategoryId());
         }catch (Exception e){
             throw e;
 //            throw new EtBadRequestException("Bat request. Please check your request body.");
