@@ -11,17 +11,17 @@ public class Transaction {
     private Integer userId;
 
     private Double amount;
-    @JsonProperty("remark")
-    private String remark;
+    @JsonProperty("note")
+    private String note;
     @JsonProperty("transaction_date")
     private Long transactionDate;
 
-    public Transaction(Integer transactionId, Integer categoryId, Integer userId, Double amount, String remark, Long transactionDate) {
+    public Transaction(Integer transactionId, Integer categoryId, Integer userId, Double amount, String note, Long transactionDate) {
         this.transactionId = transactionId;
         this.categoryId = categoryId;
         this.userId = userId;
         this.amount = amount;
-        this.remark = remark;
+        this.note = note;
         this.transactionDate = transactionDate;
     }
 
@@ -57,12 +57,12 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public String getRemark() {
-        return remark;
+    public String getNote() {
+        return note;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public Long getTransactionDate() {

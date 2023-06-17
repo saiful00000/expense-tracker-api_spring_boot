@@ -19,17 +19,17 @@ public class TransactionServiceImpl implements TransactionService{
 
     @Override
     public List<Transaction> finaAll(Integer userId) {
-        return null;
+        return repository.findAll(userId);
     }
 
     @Override
     public List<Transaction> findAllByCategory(Integer userId, Integer categoryId) {
-        return null;
+        return repository.findAllByCategory(userId, categoryId);
     }
 
     @Override
     public Transaction findById(Integer userId, Integer transactionId) {
-        return null;
+        return repository.findById(userId, transactionId);
     }
 
     @Override
