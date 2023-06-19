@@ -6,13 +6,13 @@ import com.shaiful.expensetrackerapi.models.ResponseModel;
 import com.shaiful.expensetrackerapi.repositories.TransactionRepository;
 import com.shaiful.expensetrackerapi.services.TransactionService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,12 +22,18 @@ public class TransactionController {
     @Autowired
     TransactionService service;
 
+    @GetMapping("/{transaction_id}")
+    public ResponseEntity<Transaction> getById(HttpServletRequest request, @PathVariable("transaction_id") Integer transactionId) {
+        Transaction transaction = service.findById((Integer) request.getAttribute("user_id"), transactionId);
+        return new ResponseEntity<>(transaction, HttpStatus.OK);
+    }
+
     @GetMapping("")
     public ResponseEntity<ResponseModel<List<Transaction>>> getAll(HttpServletRequest request){
         return new ResponseEntity<>(new ResponseModel<>(service.finaAll((Integer) request.getAttribute("user_id")), "Success"), HttpStatus.OK);
     };
 
-    @GetMapping("/{category_id}")
+    @GetMapping("/by-category/{category_id}")
     public ResponseEntity<ResponseModel<List<Transaction>>> getAllByCategory(HttpServletRequest request, @PathVariable("category_id") Integer categoryId){
         List<Transaction> transactionList = service.findAllByCategory(
                 (Integer) request.getAttribute("user_id"),

@@ -31,18 +31,18 @@ public class TransactionRepositoryImpl implements TransactionRepository{
 
     @Override
     public List<Transaction> findAll(Integer userId) {
-        return jdbcTemplate.query(SQL_FIND_ALL, new Object[]{userId}, transactionRowMapper);
+        return jdbcTemplate.query(SQL_FIND_ALL, transactionRowMapper, new Object[]{userId});
     }
 
     @Override
     public List<Transaction> findAllByCategory(Integer userId, Integer categoryId) {
-        return jdbcTemplate.query(SQL_FIND_ALL_BY_CATEGORY, new Object[]{userId, categoryId}, transactionRowMapper);
+        return jdbcTemplate.query(SQL_FIND_ALL_BY_CATEGORY, transactionRowMapper,  new Object[]{userId, categoryId});
     }
 
     @Override
     public Transaction findById(Integer userId, Integer transactionId) throws EtResourceNotFoundException {
         try{
-            return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new Object[]{userId, transactionId}, transactionRowMapper);
+            return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, transactionRowMapper, new Object[]{userId, transactionId});
         }catch (Exception e){
             throw new EtResourceNotFoundException("Resource not found");
         }
@@ -67,8 +67,7 @@ public class TransactionRepositoryImpl implements TransactionRepository{
 
             return (Integer) keyHolder.getKeys().get("TRANSACTION_ID");
         }catch(Exception e){
-            throw e;
-//            throw  new EtBadRequestException("Request body is not valid");
+            throw  new EtBadRequestException("Request body is not valid");
         }
     }
 
