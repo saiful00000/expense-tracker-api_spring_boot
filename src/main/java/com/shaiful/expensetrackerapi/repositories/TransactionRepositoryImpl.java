@@ -26,6 +26,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     private static final String SQL_FIND_ALL = "SELECT * FROM ET_TRANSACTIONS WHERE USER_ID = ?";
     private static final String SQL_FIND_ALL_BY_CATEGORY = "SELECT * FROM ET_TRANSACTIONS WHERE USER_ID = ? AND CATEGORY_ID = ?";
     private static final String SQL_UPDATE = "UPDATE ET_TRANSACTIONS SET AMOUNT = ?, NOTE = ?, TRANSACTION_DATE = ? WHERE USER_ID = ? AND TRANSACTION_ID = ?";
+    private static final String SQL_DELETE = "DELETE FROM ET_TRANSACTIONS WHERE USER_ID = ? AND TRANSACTION_ID = ?";
 
     @Override
     public List<Transaction> findAll(Integer userId) {
@@ -87,7 +88,15 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     public void removeById(Integer userId, Integer transactionId) throws EtResourceNotFoundException {
+        try{
+            int count = jdbcTemplate.update(SQL_DELETE, userId, transactionId);
 
+            if(count == 0)
+                throw new EtResourceNotFoundException("Transaction not fount");
+
+        }catch (Exception e){
+            throw new EtResourceNotFoundException("Transaction not found");
+        }
     }
 
     private final RowMapper<Transaction> transactionRowMapper = ((res, rowNumber) -> {

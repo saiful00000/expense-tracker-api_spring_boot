@@ -64,4 +64,10 @@ public class TransactionController {
         service.updateTransaction((Integer) request.getAttribute("user_id"), transaction);
         return new ResponseEntity<>(Map.of("message", "Transaction updated successfully"), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{transaction_id}")
+    public ResponseEntity<Map<String, Object>> removeTransaction(HttpServletRequest request, @PathVariable("transaction_id") Integer transactionId){
+        service.removeTransaction((Integer) request.getAttribute("user_id"), transactionId);
+        return new ResponseEntity<>(Map.of("message", "Transaction deleted successfully"), HttpStatus.OK);
+    }
 }
