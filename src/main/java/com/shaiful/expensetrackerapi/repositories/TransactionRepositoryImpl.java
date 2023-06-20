@@ -16,41 +16,39 @@ import java.sql.Statement;
 import java.util.List;
 
 @Repository
-public class TransactionRepositoryImpl implements TransactionRepository{
+public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
 
     private static final String SQL_CREATE = "INSERT INTO ET_TRANSACTIONS (TRANSACTION_ID, CATEGORY_ID, USER_ID, AMOUNT, NOTE, TRANSACTION_DATE) VALUES(NEXTVAL('ET_TRANSACTIONS_SEQ'), ?, ?, ?, ?, ?)";
-
     private static final String SQL_FIND_BY_ID = "SELECT TRANSACTION_ID, CATEGORY_ID, USER_ID, AMOUNT, NOTE, TRANSACTION_DATE FROM ET_TRANSACTIONS WHERE USER_ID = ? AND TRANSACTION_ID = ?";
-
     private static final String SQL_FIND_ALL = "SELECT * FROM ET_TRANSACTIONS WHERE USER_ID = ?";
-
     private static final String SQL_FIND_ALL_BY_CATEGORY = "SELECT * FROM ET_TRANSACTIONS WHERE USER_ID = ? AND CATEGORY_ID = ?";
+    private static final String SQL_UPDATE = "UPDATE ET_TRANSACTIONS SET AMOUNT = ?, NOTE = ?, TRANSACTION_DATE = ? WHERE USER_ID = ? AND TRANSACTION_ID = ?";
 
     @Override
     public List<Transaction> findAll(Integer userId) {
-        return jdbcTemplate.query(SQL_FIND_ALL, transactionRowMapper, new Object[]{userId});
+        return jdbcTemplate.query(SQL_FIND_ALL, transactionRowMapper, userId);
     }
 
     @Override
     public List<Transaction> findAllByCategory(Integer userId, Integer categoryId) {
-        return jdbcTemplate.query(SQL_FIND_ALL_BY_CATEGORY, transactionRowMapper,  new Object[]{userId, categoryId});
+        return jdbcTemplate.query(SQL_FIND_ALL_BY_CATEGORY, transactionRowMapper, userId, categoryId);
     }
 
     @Override
     public Transaction findById(Integer userId, Integer transactionId) throws EtResourceNotFoundException {
-        try{
-            return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, transactionRowMapper, new Object[]{userId, transactionId});
-        }catch (Exception e){
+        try {
+            return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, transactionRowMapper, userId, transactionId);
+        } catch (Exception e) {
             throw new EtResourceNotFoundException("Resource not found");
         }
     }
 
     @Override
     public Integer create(Integer categoryId, Integer userId, Double amount, String remark, Long transactionDate) throws EtBadRequestException {
-        try{
+        try {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(
                     (connection) -> {
@@ -66,14 +64,25 @@ public class TransactionRepositoryImpl implements TransactionRepository{
             );
 
             return (Integer) keyHolder.getKeys().get("TRANSACTION_ID");
-        }catch(Exception e){
-            throw  new EtBadRequestException("Request body is not valid");
+        } catch (Exception e) {
+            throw new EtBadRequestException("Request body is not valid");
         }
     }
 
     @Override
     public void update(Integer userId, Transaction transaction) throws EtBadRequestException {
-
+        try {
+            jdbcTemplate.update(
+                    SQL_UPDATE,
+                    transaction.getAmount(),
+                    transaction.getNote(),
+                    transaction.getTransactionDate(),
+                    userId,
+                    transaction.getTransactionId()
+            );
+        } catch (Exception e) {
+            throw new EtBadRequestException("Request body is not valid.");
+        }
     }
 
     @Override
@@ -81,7 +90,7 @@ public class TransactionRepositoryImpl implements TransactionRepository{
 
     }
 
-    private RowMapper<Transaction> transactionRowMapper = ((res, rowNumber) -> {
+    private final RowMapper<Transaction> transactionRowMapper = ((res, rowNumber) -> {
         return new Transaction(
                 res.getInt("TRANSACTION_ID"),
                 res.getInt("CATEGORY_ID"),

@@ -19,13 +19,9 @@ import java.util.List;
 @Repository
 public class CategoryRepositoryImpl implements CategoryRepository {
 
-    private static final String FIND_ALL = "SELECT C.CATEGORY_ID, C.USER_ID, C.TITLE, C.DESCRIPTION, COALESCE(SUM(T.AMOUNT), 0) TOTAL_EXPENSE "
-            + "FROM ET_TRANSACTIONS T RIGHT OUTER JOIN ET_CATEGORIES C ON C.CATEGORY_ID = T.CATEGORY_ID "
-            + "WHERE C.USER_ID = ? GROUP BY C.CATEGORY_ID";
+    private static final String FIND_ALL = "SELECT C.CATEGORY_ID, C.USER_ID, C.TITLE, C.DESCRIPTION, COALESCE(SUM(T.AMOUNT), 0) TOTAL_EXPENSE " + "FROM ET_TRANSACTIONS T RIGHT OUTER JOIN ET_CATEGORIES C ON C.CATEGORY_ID = T.CATEGORY_ID " + "WHERE C.USER_ID = ? GROUP BY C.CATEGORY_ID";
 
-    private static final String SQL_FIND_BY_ID = "SELECT C.CATEGORY_ID, C.USER_ID, C.TITLE, C.DESCRIPTION, COALESCE(SUM(T.AMOUNT), 0) TOTAL_EXPENSE "
-            + "FROM ET_TRANSACTIONS T RIGHT OUTER JOIN ET_CATEGORIES C ON C.CATEGORY_ID = T.CATEGORY_ID "
-            + "WHERE C.USER_ID = ? AND C.CATEGORY_ID = ? GROUP BY C.CATEGORY_ID";
+    private static final String SQL_FIND_BY_ID = "SELECT C.CATEGORY_ID, C.USER_ID, C.TITLE, C.DESCRIPTION, COALESCE(SUM(T.AMOUNT), 0) TOTAL_EXPENSE " + "FROM ET_TRANSACTIONS T RIGHT OUTER JOIN ET_CATEGORIES C ON C.CATEGORY_ID = T.CATEGORY_ID " + "WHERE C.USER_ID = ? AND C.CATEGORY_ID = ? GROUP BY C.CATEGORY_ID";
     private static final String SQL_CREATE = "INSERT INTO ET_CATEGORIES (CATEGORY_ID, USER_ID, TITLE, DESCRIPTION) VALUES(NEXTVAL('ET_CATEGORIES_SEQ'), ?, ?, ?)";
 
     private static final String SQL_UPDATE = "UPDATE ET_CATEGORIES SET TITLE = ?, DESCRIPTION = ? WHERE USER_ID = ? AND CATEGORY_ID = ?";
@@ -40,9 +36,9 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public Category findById(Integer userId, Integer categoryId) throws EtResourceNotFoundException {
-        try{
+        try {
             return jdbcTemplate.queryForObject(SQL_FIND_BY_ID, new Object[]{userId, categoryId}, categoryRowMapper);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new EtResourceNotFoundException("");
         }
     }
@@ -69,11 +65,11 @@ public class CategoryRepositoryImpl implements CategoryRepository {
 
     @Override
     public void update(Integer userId, Category category) throws EtBadRequestException {
-        try{
+        try {
             jdbcTemplate.update(SQL_UPDATE, category.getTitle(), category.getDescription(), userId, category.getCategoryId());
-        }catch (Exception e){
-            throw e;
-//            throw new EtBadRequestException("Bat request. Please check your request body.");
+        } catch (Exception e) {
+//            throw e;
+            throw new EtBadRequestException("Bat request. Please check your request body.");
         }
     }
 
@@ -83,12 +79,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     private final RowMapper<Category> categoryRowMapper = ((resultSet, rowNumber) -> {
-        return new Category(
-                resultSet.getInt("CATEGORY_ID"),
-                resultSet.getInt("USER_ID"),
-                resultSet.getString("TITLE"),
-                resultSet.getString("DESCRIPTION"),
-                resultSet.getDouble("TOTAL_EXPENSE")
-        );
+        return new Category(resultSet.getInt("CATEGORY_ID"), resultSet.getInt("USER_ID"), resultSet.getString("TITLE"), resultSet.getString("DESCRIPTION"), resultSet.getDouble("TOTAL_EXPENSE"));
     });
 }

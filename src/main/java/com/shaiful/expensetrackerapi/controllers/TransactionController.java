@@ -58,4 +58,10 @@ public class TransactionController {
 
         return new ResponseEntity<>(new ResponseModel<>(transaction, "Transaction created successfully"), HttpStatus.CREATED);
     }
+
+    @PutMapping("")
+    public ResponseEntity<Map<String, String>> updateTransaction(HttpServletRequest request, @RequestBody Transaction transaction){
+        service.updateTransaction((Integer) request.getAttribute("user_id"), transaction);
+        return new ResponseEntity<>(Map.of("message", "Transaction updated successfully"), HttpStatus.OK);
+    }
 }

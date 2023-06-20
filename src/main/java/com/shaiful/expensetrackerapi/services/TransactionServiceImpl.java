@@ -40,7 +40,7 @@ public class TransactionServiceImpl implements TransactionService{
 
     @Override
     public void updateTransaction(Integer userID, Transaction transaction) throws EtBadRequestException {
-
+        repository.update(userID, transaction);
     }
 
     @Override
