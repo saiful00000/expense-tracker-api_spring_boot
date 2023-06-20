@@ -53,4 +53,11 @@ public class CategoryController {
         categoryService.updateCategory((Integer) request.getAttribute("user_id"), category);
         return new ResponseEntity<>(Map.of("success", true, "message", "Category updated successfully."), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{category_id}")
+    public ResponseEntity<Map<String, Object>> removeCategory(HttpServletRequest request, @PathVariable("category_id") Integer categoryId){
+        categoryService.deleteCategoryWithAllTransactions((Integer) request.getAttribute("user_id"), categoryId);
+        return new ResponseEntity<>(Map.of("message", "Category removed successfully."), HttpStatus.OK);
+    }
+
 }
